@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Cambridge Books Tracker - Study Progress Chart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4CAF50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 8px;
+            --book-red: #e63946;
+            --book-blue: #1d3557;
+            --book-gold: #ffd166;
+            --book-green: #2a9d8f;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7ff 0%, #e6e9ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(135deg, var(--book-blue), var(--primary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 4px solid var(--book-gold);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--book-gold);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--book-gold);
+            color: var(--book-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: #ffc043;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid white;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            color: var(--book-blue);
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Profile Panel */
+        .profile-panel {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            border-top: 5px solid var(--book-blue);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--book-gold);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--book-blue);
+        }
+
+        .profile-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .profile-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--light-gray);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Book Cards Design */
+        .books-section {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border-top: 5px solid var(--book-red);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--book-blue);
+            margin-bottom: 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--book-red);
+        }
+
+        .book-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: var(--radius);
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: var(--light-gray);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            background-color: var(--book-blue);
+            color: white;
+        }
+
+        .filter-btn:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        /* Book Cards Grid - Book Design */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .book-card {
+            background: linear-gradient(145deg, #ffffff, #f5f5f5);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 8px solid var(--book-blue);
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .book-card.completed {
+            background: linear-gradient(145deg, #f0f9ff, #e6f4ff);
+            border-left-color: var(--book-green);
+        }
+
+        .book-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .book-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--book-blue);
+            opacity: 0.2;
+            position: absolute;
+            top: -10px;
+            right: 0;
+        }
+
+        .book-title {
+            font-size: 1.4rem;
+            color: var(--book-blue);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .book-subtitle {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        /* Tests inside book */
+        .tests-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .test-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 10px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .test-row:hover {
+            background: #f0f0f0;
+        }
+
+        .test-name {
+            flex: 1;
+            font-weight: 500;
+            color: var(--book-blue);
+        }
+
+        .test-status {
+            display: flex;
+            gap: 5px;
+        }
+
+        .section-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .section-dot:hover {
+            transform: scale(1.1);
+        }
+
+        .section-dot.reading {
+            background-color: var(--book-red);
+        }
+
+        .section-dot.listening {
+            background-color: var(--book-green);
+        }
+
+        .section-dot.writing {
+            background-color: var(--book-gold);
+            color: var(--book-blue);
+        }
+
+        .section-dot.speaking {
+            background-color: var(--primary);
+        }
+
+        .section-dot.completed {
+            box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+        }
+
+        .section-dot.not-completed {
+            opacity: 0.5;
+            background-color: #ccc !important;
+            color: #666 !important;
+        }
+
+        /* Book Progress Bar */
+        .book-progress {
+            margin-top: 15px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--book-blue), var(--primary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.completed {
+            background: linear-gradient(90deg, var(--book-green), #4CAF50);
+        }
+
+        /* Book Action Button */
+        .book-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .book-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .book-btn.primary {
+            background-color: var(--book-blue);
+            color: white;
+        }
+
+        .book-btn.primary:hover {
+            background-color: #152642;
+        }
+
+        .book-btn.outline {
+            background-color: transparent;
+            border: 1px solid var(--book-blue);
+            color: var(--book-blue);
+        }
+
+        .book-btn.outline:hover {
+            background-color: rgba(29, 53, 87, 0.05);
+        }
+
+        /* IELTS Badge */
+        .ielts-badge {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: var(--book-red);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transform: rotate(-15deg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Progress Circles */
+        .progress-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(var(--book-blue) 0% 75%, var(--light-gray) 75% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .progress-value {
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--book-blue);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-top: 5px solid var(--book-blue);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            color: var(--book-blue);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--book-blue);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: var(--radius);
+            border: 1px solid #ddd;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--book-blue);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-top: 1.5rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-btn.google {
+            background-color: #DB4437;
+            color: white;
+        }
+
+        .social-btn.facebook {
+            background-color: #4267B2;
+            color: white;
+        }
+
+        .social-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--book-blue);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+            border-top: 5px solid var(--book-gold);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--book-gold);
+        }
+
+        .footer-section p {
+            color: #adb5bd;
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--book-gold);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #495057;
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+
+        .creator-credit {
+            text-align: center;
+            margin-top: 1rem;
+            color: #adb5bd;
+        }
+
+        .creator-credit a {
+            color: var(--book-gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .creator-credit a:hover {
+            text-decoration: underline;
+        }
+
+        /* Settings & Other Elements */
+        .settings-panel {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border-top: 5px solid var(--book-green);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--book-blue);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+            }
+            
+            .book-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-book-open"></i>
+                <h1>Cambridge IELTS Tracker</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" id="nav-dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#" id="nav-progress"><i class="fas fa-chart-line"></i> Progress</a></li>
+                    <li><a href="#" id="nav-settings"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#" id="nav-profile"><i class="fas fa-user"></i> Profile</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" id="login-btn">Login</button>
+                <button class="btn btn-primary" id="signup-btn">Sign Up</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Cambridge IELTS Books Progress Tracker</h2>
+            <p>Track your preparation across all 20 Cambridge IELTS books. Each book contains 4 complete tests with Reading, Listening, Writing, and Speaking sections. Monitor your band scores and improve systematically.</p>
+            <div class="book-filter">
+                <button class="filter-btn active" data-book="all">All Books (1-20)</button>
+                <button class="filter-btn" data-book="1-5">Books 1-5</button>
+                <button class="filter-btn" data-book="6-10">Books 6-10</button>
+                <button class="filter-btn" data-book="11-15">Books 11-15</button>
+                <button class="filter-btn" data-book="16-20">Books 16-20</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Dashboard View -->
+        <div id="dashboard-view">
+            <div class="dashboard">
+                <!-- Profile Panel -->
+                <div class="profile-panel">
+                    <div class="profile-header">
+                        <img src="https://ui-avatars.com/api/?name=IELTS+Student&background=1d3557&color=fff" alt="Profile" class="profile-pic" id="profile-image">
+                        <div class="profile-info">
+                            <h3 id="profile-name">IELTS Student</h3>
+                            <p id="profile-username">@ielts_learner</p>
+                            <p><i class="fas fa-trophy"></i> Target: Band <span id="target-band-display">7.5</span></p>
+                        </div>
+                    </div>
+                    <div class="profile-details">
+                        <div class="detail-item">
+                            <span>Books Completed</span>
+                            <strong id="books-completed">3/20</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>Tests Completed</span>
+                            <strong id="tests-completed">12/80</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>Average Band</span>
+                            <strong id="average-band">6.8</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>Study Streak</span>
+                            <strong id="study-streak">15 days</strong>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" id="edit-profile-btn">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+
+                <!-- Books Section -->
+                <div class="books-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-book"></i> Cambridge IELTS Books
+                    </h3>
+                    <p style="margin-bottom: 1.5rem; color: var(--gray);">Click on section circles (R, L, W, S) to mark as completed and update your band scores.</p>
+                    
+                    <div class="books-grid" id="books-container">
+                        <!-- Book cards will be generated by JavaScript -->
+                    </div>
+                    
+                    <div class="progress-summary" style="background: #f8f9fa; padding: 1.5rem; border-radius: var(--radius); margin-top: 2rem;">
+                        <h3 class="section-title" style="border-bottom: none; margin-bottom: 0.5rem;">
+                            <i class="fas fa-chart-pie"></i> Overall Progress
+                        </h3>
+                        <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                            <div class="progress-circle">
+                                <div class="progress-value" id="overall-progress">45%</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <p id="overall-progress-text" style="margin-bottom: 10px;">
+                                    You've completed 45% of all Cambridge IELTS tests
+                                </p>
+                                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.8rem; font-weight: 700; color: var(--book-blue);">3</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray);">Books Done</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.8rem; font-weight: 700; color: var(--book-green);">12</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray);">Tests Done</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.8rem; font-weight: 700; color: var(--book-red);">48</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray);">Sections Done</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings View (Hidden by default) -->
+        <div id="settings-view" style="display: none;">
+            <div class="settings-panel">
+                <h3 class="section-title"><i class="fas fa-cog"></i> Account Settings</h3>
+                <div class="setting-item">
+                    <div>
+                        <h4>Enable Cloud Sync</h4>
+                        <p>Save your progress to the cloud so you never lose data</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="cloud-sync" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <h4>Reminder Notifications</h4>
+                        <p>Get reminders to complete tests regularly</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notifications" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <h4>Dark Mode</h4>
+                        <p>Switch to dark mode for comfortable night study</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dark-mode">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <h4>Login & Security</h4>
+                        <p>Manage your login methods and account security</p>
+                    </div>
+                    <button class="btn btn-outline" id="manage-login-btn" style="border-color: var(--book-blue); color: var(--book-blue);">Manage</button>
+                </div>
+            </div>
+            
+            <div class="settings-panel">
+                <h3 class="section-title"><i class="fas fa-graduation-cap"></i> Study Preferences</h3>
+                <div class="form-group">
+                    <label for="target-band">Target Band Score</label>
+                    <select id="target-band" class="form-control">
+                        <option value="6.0">Band 6.0</option>
+                        <option value="6.5">Band 6.5</option>
+                        <option value="7.0" selected>Band 7.0</option>
+                        <option value="7.5">Band 7.5</option>
+                        <option value="8.0">Band 8.0</option>
+                        <option value="8.5">Band 8.5</option>
+                        <option value="9.0">Band 9.0</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="study-focus">Primary Focus Area</label>
+                    <select id="study-focus" class="form-control">
+                        <option value="reading">Reading</option>
+                        <option value="listening" selected>Listening</option>
+                        <option value="writing">Writing</option>
+                        <option value="speaking">Speaking</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="save-preferences">Save Preferences</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Cambridge IELTS Tracker</h3>
+                    <p>Track your progress across all 20 Cambridge IELTS books. Each book contains 4 complete tests with all sections. Monitor your performance and achieve your target band score.</p>
+                    <p>Made with <i class="fas fa-heart" style="color:#e63946;"></i> for IELTS learners worldwide</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Cambridge Books Structure</h3>
+                    <ul style="list-style: none; color: #adb5bd;">
+                        <li><i class="fas fa-book"></i> 20 Cambridge Books</li>
+                        <li><i class="fas fa-file-alt"></i> 4 Tests per Book</li>
+                        <li><i class="fas fa-list"></i> 4 Sections per Test</li>
+                        <li><i class="fas fa-chart-bar"></i> Track Band Scores</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <p>Follow for more IELTS preparation tips and resources</p>
+                    <div class="social-links">
+                        <a href="https://tiktok.com/@abdullahalrehad" target="_blank"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://youtube.com/@abdullahalrehad" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="creator-credit">
+                <p>Sponsored by <a href="https://tiktok.com/@abdullahalrehad" target="_blank">Abdullah Al Rehad</a> • IELTS Mentor & Content Creator</p>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 Cambridge IELTS Tracker. All rights reserved. | Version 2.0</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login to Your Account</h3>
+                <button class="close-modal" id="close-login">&times;</button>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email or Username</label>
+                    <input type="text" id="login-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+            <div style="text-align: center; margin: 1rem 0; color: var(--gray);">or</div>
+            <div class="social-login">
+                <button class="social-btn google" id="google-login">
+                    <i class="fab fa-google"></i> Google
+                </button>
+                <button class="social-btn facebook" id="facebook-login">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </button>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; color: var(--gray);">
+                Don't have an account? <a href="#" id="show-signup" style="color: var(--book-blue); font-weight: 500;">Sign Up</a>
+            </p>
+            <p style="text-align: center; margin-top: 0.5rem;">
+                <a href="#" id="skip-login" style="color: var(--gray); font-size: 0.9rem;">Skip login for now</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signup-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Your Account</h3>
+                <button class="close-modal" id="close-signup">&times;</button>
+            </div>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" class="form-control" required>
+                    <small style="color: var(--gray);">This will be your unique identifier</small>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
+            <div style="text-align: center; margin: 1rem 0; color: var(--gray);">or</div>
+            <div class="social-login">
+                <button class="social-btn google" id="google-signup">
+                    <i class="fab fa-google"></i> Google
+                </button>
+                <button class="social-btn facebook" id="facebook-signup">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </button>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; color: var(--gray);">
+                Already have an account? <a href="#" id="show-login" style="color: var(--book-blue); font-weight: 500;">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Test Results Modal -->
+    <div class="modal" id="test-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Test Results</h3>
+                <button class="close-modal" id="close-test">&times;</button>
+            </div>
+            <form id="test-form">
+                <div class="form-group">
+                    <label for="test-book">Cambridge Book</label>
+                    <select id="test-book" class="form-control" required>
+                        <option value="">Select Book</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="test-number">Test Number (1-4)</label>
+                    <select id="test-number" class="form-control" required>
+                        <option value="">Select Test</option>
+                        <option value="1">Test 1</option>
+                        <option value="2">Test 2</option>
+                        <option value="3">Test 3</option>
+                        <option value="4">Test 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="test-section">Section</label>
+                    <select id="test-section" class="form-control" required>
+                        <option value="">Select Section</option>
+                        <option value="reading">Reading</option>
+                        <option value="listening">Listening</option>
+                        <option value="writing">Writing</option>
+                        <option value="speaking">Speaking</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="test-band">Band Score (0-9)</label>
+                    <input type="number" id="test-band" class="form-control" min="0" max="9" step="0.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="test-correct">Correct Answers (Out of 40)</label>
+                    <input type="number" id="test-correct" class="form-control" min="0" max="40">
+                    <small style="color: var(--gray);">For Reading/Listening sections only</small>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Test Results</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="profile-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-modal" id="close-profile">&times;</button>
+            </div>
+            <form id="profile-form">
+                <div class="form-group" style="text-align: center;">
+                    <img src="https://ui-avatars.com/api/?name=IELTS+Student&background=1d3557&color=fff" alt="Profile" class="profile-pic" id="profile-image-edit" style="cursor: pointer;">
+                    <input type="file" id="profile-upload" accept="image/*" style="display: none;">
+                    <p style="margin-top: 10px;">
+                        <a href="#" id="change-photo" style="color: var(--book-blue);">Change profile picture</a>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="edit-name">Full Name</label>
+                    <input type="text" id="edit-name" class="form-control" value="IELTS Student" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-username">Username</label>
+                    <input type="text" id="edit-username" class="form-control" value="ielts_learner" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-email">Email Address</label>
+                    <input type="email" id="edit-email" class="form-control" value="student@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-target">Target Band Score</label>
+                    <select id="edit-target" class="form-control">
+                        <option value="6.0">Band 6.0</option>
+                        <option value="6.5">Band 6.5</option>
+                        <option value="7.0">Band 7.0</option>
+                        <option value="7.5" selected>Band 7.5</option>
+                        <option value="8.0">Band 8.0</option>
+                        <option value="8.5">Band 8.5</option>
+                        <option value="9.0">Band 9.0</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // App State
+        const state = {
+            user: {
+                loggedIn: false,
+                name: "IELTS Student",
+                username: "ielts_learner",
+                email: "student@example.com",
+                targetBand: 7.5,
+                profilePic: "https://ui-avatars.com/api/?name=IELTS+Student&background=1d3557&color=fff"
+            },
+            tests: [],
+            currentView: 'dashboard',
+            currentFilter: 'all'
+        };
+
+        // DOM Elements
+        const loginModal = document.getElementById('login-modal');
+        const signupModal = document.getElementById('signup-modal');
+        const testModal = document.getElementById('test-modal');
+        const profileModal = document.getElementById('profile-modal');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const closeLogin = document.getElementById('close-login');
+        const closeSignup = document.getElementById('close-signup');
+        const closeTest = document.getElementById('close-test');
+        const closeProfile = document.getElementById('close-profile');
+        const showSignup = document.getElementById('show-signup');
+        const showLogin = document.getElementById('show-login');
+        const skipLogin = document.getElementById('skip-login');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const testForm = document.getElementById('test-form');
+        const profileForm = document.getElementById('profile-form');
+        const navDashboard = document.getElementById('nav-dashboard');
+        const navProgress = document.getElementById('nav-progress');
+        const navSettings = document.getElementById('nav-settings');
+        const navProfile = document.getElementById('nav-profile');
+        const dashboardView = document.getElementById('dashboard-view');
+        const settingsView = document.getElementById('settings-view');
+        const booksContainer = document.getElementById('books-container');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const changePhoto = document.getElementById('change-photo');
+        const profileUpload = document.getElementById('profile-upload');
+        const profileImage = document.getElementById('profile-image');
+        const profileImageEdit = document.getElementById('profile-image-edit');
+        const googleLogin = document.getElementById('google-login');
+        const facebookLogin = document.getElementById('facebook-login');
+        const googleSignup = document.getElementById('google-signup');
+        const facebookSignup = document.getElementById('facebook-signup');
+        const manageLoginBtn = document.getElementById('manage-login-btn');
+
+        // Initialize sample test data for Cambridge books (20 books, 4 tests each, 4 sections each)
+        function initializeTestData() {
+            const tests = [];
+            const sections = ['reading', 'listening', 'writing', 'speaking'];
+            
+            for (let book = 1; book <= 20; book++) {
+                for (let testNum = 1; testNum <= 4; testNum++) {
+                    for (let section of sections) {
+                        // Mark first few books as partially completed for demo
+                        let completed = false;
+                        let band = null;
+                        let correct = null;
+                        
+                        // Demo data: Books 1-3 are partially completed
+                        if (book <= 3) {
+                            // Mark some sections as completed
+                            if (Math.random() > 0.4) {
+                                completed = true;
+                                band = (6.0 + Math.random() * 2.5).toFixed(1);
+                                
+                                if (section === 'reading' || section === 'listening') {
+                                    correct = Math.floor(25 + Math.random() * 15);
+                                }
+                            }
+                        }
+                        
+                        tests.push({
+                            id: `book-${book}-test-${testNum}-${section}`,
+                            book: book,
+                            test: testNum,
+                            section: section,
+                            completed: completed,
+                            band: band,
+                            correct: correct,
+                            date: completed ? new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000) : null
+                        });
+                    }
+                }
+            }
+            
+            state.tests = tests;
+        }
+
+        // Generate book cards with book design
+        function generateBookCards(filter = 'all') {
+            booksContainer.innerHTML = '';
+            state.currentFilter = filter;
+            
+            // Determine which books to show based on filter
+            let booksToShow = [];
+            if (filter === 'all') {
+                booksToShow = Array.from({length: 20}, (_, i) => i + 1);
+            } else {
+                const [start, end] = filter.split('-').map(Number);
+                booksToShow = Array.from({length: end - start + 1}, (_, i) => start + i);
+            }
+            
+            // Create a card for each book
+            booksToShow.forEach(bookNumber => {
+                // Get all tests for this book
+                const bookTests = state.tests.filter(test => test.book === bookNumber);
+                
+                // Calculate completion stats for this book
+                const totalTestsInBook = 16; // 4 tests × 4 sections
+                const completedTests = bookTests.filter(test => test.completed).length;
+                const completionPercent = Math.round((completedTests / totalTestsInBook) * 100);
+                
+                // Check if book is fully completed
+                const isBookCompleted = completedTests === totalTestsInBook;
+                
+                // Group tests by test number for display
+                const testsByNumber = {};
+                bookTests.forEach(test => {
+                    if (!testsByNumber[test.test]) {
+                        testsByNumber[test.test] = [];
+                    }
+                    testsByNumber[test.test].push(test);
+                });
+                
+                // Calculate average band for completed tests
+                const completedTestScores = bookTests.filter(test => test.completed && test.band);
+                const avgBand = completedTestScores.length > 0 
+                    ? (completedTestScores.reduce((sum, test) => sum + parseFloat(test.band), 0) / completedTestScores.length).toFixed(1)
+                    : null;
+                
+                // Create book card with book design
+                const card = document.createElement('div');
+                card.className = `book-card ${isBookCompleted ? 'completed' : ''}`;
+                card.dataset.book = bookNumber;
+                
+                card.innerHTML = `
+                    <div class="ielts-badge">IELTS</div>
+                    <div class="book-number">${bookNumber}</div>
+                    
+                    <div class="book-card-header">
+                        <div>
+                            <div class="book-title">Cambridge IELTS ${bookNumber}</div>
+                            <div class="book-subtitle">4 Complete Tests • Academic</div>
+                        </div>
+                    </div>
+                    
+                    <div class="book-progress">
+                        <div class="progress-text">
+                            <span>Progress</span>
+                            <span>${completedTests}/${totalTestsInBook} sections</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ${isBookCompleted ? 'completed' : ''}" style="width: ${completionPercent}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="tests-container">
+                        ${Object.keys(testsByNumber).sort().map(testNum => {
+                            const tests = testsByNumber[testNum];
+                            const completedCount = tests.filter(t => t.completed).length;
+                            
+                            return `
+                                <div class="test-row" data-book="${bookNumber}" data-test="${testNum}">
+                                    <div class="test-name">Test ${testNum}</div>
+                                    <div class="test-status">
+                                        ${tests.map(test => {
+                                            const isCompleted = test.completed;
+                                            return `
+                                                <div class="section-dot ${test.section} ${isCompleted ? 'completed' : 'not-completed'}" 
+                                                     title="${test.section.charAt(0).toUpperCase() + test.section.slice(1)}${isCompleted ? `: Band ${test.band}` : ': Not completed'}"
+                                                     data-book="${bookNumber}"
+                                                     data-test="${testNum}"
+                                                     data-section="${test.section}">
+                                                    ${test.section.charAt(0).toUpperCase()}
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <div class="book-actions">
+                        <button class="book-btn outline" onclick="openTestModal(${bookNumber})">
+                            <i class="fas fa-plus-circle"></i> Add Result
+                        </button>
+                        <button class="book-btn primary" onclick="viewBookDetails(${bookNumber})">
+                            <i class="fas fa-chart-bar"></i> Details
+                        </button>
+                    </div>
+                `;
+                
+                booksContainer.appendChild(card);
+            });
+            
+            // Add click event to section dots
+            document.querySelectorAll('.section-dot').forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const book = this.dataset.book;
+                    const test = this.dataset.test;
+                    const section = this.dataset.section;
+                    
+                    // Toggle completion status
+                    const testId = `book-${book}-test-${test}-${section}`;
+                    const testIndex = state.tests.findIndex(t => t.id === testId);
+                    
+                    if (testIndex !== -1) {
+                        if (state.tests[testIndex].completed) {
+                            // If already completed, ask for confirmation to mark as incomplete
+                            if (confirm(`Mark ${section} section of Test ${test} in Book ${book} as not completed?`)) {
+                                state.tests[testIndex].completed = false;
+                                state.tests[testIndex].band = null;
+                                state.tests[testIndex].correct = null;
+                                state.tests[testIndex].date = null;
+                                this.classList.remove('completed');
+                                this.classList.add('not-completed');
+                                this.title = `${section.charAt(0).toUpperCase() + section.slice(1)}: Not completed`;
+                                generateBookCards(state.currentFilter);
+                            }
+                        } else {
+                            // If not completed, open modal to enter results
+                            openTestModalForSection(book, test, section);
+                        }
+                    }
+                });
+            });
+            
+            // Update overall progress
+            updateOverallProgress();
+        }
+
+        // Open test modal for a specific book, test, and section
+        function openTestModalForSection(bookNumber, testNumber, section) {
+            const testBookSelect = document.getElementById('test-book');
+            testBookSelect.innerHTML = '<option value="">Select Book</option>';
+            
+            for (let i = 1; i <= 20; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Cambridge Book ${i}`;
+                if (i === parseInt(bookNumber)) option.selected = true;
+                testBookSelect.appendChild(option);
+            }
+            
+            document.getElementById('test-number').value = testNumber;
+            document.getElementById('test-section').value = section;
+            
+            testModal.classList.add('active');
+        }
+
+        // Open test modal for a specific book
+        window.openTestModal = function(bookNumber) {
+            const testBookSelect = document.getElementById('test-book');
+            testBookSelect.innerHTML = '<option value="">Select Book</option>';
+            
+            for (let i = 1; i <= 20; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Cambridge Book ${i}`;
+                if (i === bookNumber) option.selected = true;
+                testBookSelect.appendChild(option);
+            }
+            
+            testModal.classList.add('active');
+        };
+
+        // View book details
+        window.viewBookDetails = function(bookNumber) {
+            const bookTests = state.tests.filter(test => test.book === bookNumber);
+            const completedTests = bookTests.filter(test => test.completed);
+            const totalTests = bookTests.length;
+            
+            let detailsText = `Cambridge IELTS Book ${bookNumber}\n\n`;
+            detailsText += `Completed: ${completedTests.length}/${totalTests} sections\n`;
+            
+            if (completedTests.length > 0) {
+                // Group by test
+                const byTest = {};
+                completedTests.forEach(test => {
+                    if (!byTest[test.test]) byTest[test.test] = [];
+                    byTest[test.test].push(test);
+                });
+                
+                Object.keys(byTest).sort().forEach(testNum => {
+                    detailsText += `\nTest ${testNum}:\n`;
+                    byTest[testNum].forEach(test => {
+                        detailsText += `  ${test.section.charAt(0).toUpperCase()}: Band ${test.band}`;
+                        if (test.correct) detailsText += ` (${test.correct}/40)`;
+                        detailsText += '\n';
+                    });
+                });
+            }
+            
+            alert(detailsText);
+        };
+
+        // Update overall progress stats
+        function updateOverallProgress() {
+            const totalTests = state.tests.length; // 20 books × 4 tests × 4 sections = 320
+            const completedTests = state.tests.filter(t => t.completed).length;
+            const overallPercent = Math.round((completedTests / totalTests) * 100);
+            
+            // Update progress circle
+            document.querySelector('.progress-circle').style.background = 
+                `conic-gradient(var(--book-blue) 0% ${overallPercent}%, var(--light-gray) ${overallPercent}% 100%)`;
+            document.getElementById('overall-progress').textContent = `${overallPercent}%`;
+            document.getElementById('overall-progress-text').textContent = 
+                `You've completed ${overallPercent}% of all Cambridge IELTS tests (${completedTests}/320 sections)`;
+            
+            // Update profile stats
+            const completedBooks = Array.from({length: 20}, (_, i) => i + 1)
+                .filter(book => {
+                    const bookTests = state.tests.filter(test => test.book === book);
+                    return bookTests.filter(test => test.completed).length === 16;
+                }).length;
+            
+            document.getElementById('books-completed').textContent = `${completedBooks}/20`;
+            document.getElementById('tests-completed').textContent = `${completedTests}/320`;
+            document.getElementById('study-streak').textContent = `${Math.floor(Math.random() * 30) + 1} days`;
+            document.getElementById('target-band-display').textContent = state.user.targetBand;
+            
+            // Calculate average band
+            const completedSections = state.tests.filter(t => t.completed);
+            if (completedSections.length > 0) {
+                const avgBand = (completedSections.reduce((sum, t) => sum + parseFloat(t.band), 0) / completedSections.length).toFixed(1);
+                document.getElementById('average-band').textContent = avgBand;
+            }
+        }
+
+        // Update profile info
+        function updateProfileInfo() {
+            document.getElementById('profile-name').textContent = state.user.name;
+            document.getElementById('profile-username').textContent = `@${state.user.username}`;
+            document.getElementById('profile-image').src = state.user.profilePic;
+            document.getElementById('profile-image-edit').src = state.user.profilePic;
+            document.getElementById('edit-name').value = state.user.name;
+            document.getElementById('edit-username').value = state.user.username;
+            document.getElementById('edit-email').value = state.user.email;
+            document.getElementById('edit-target').value = state.user.targetBand;
+            document.getElementById('target-band-display').textContent = state.user.targetBand;
+        }
+
+        // Switch views
+        function switchView(view) {
+            state.currentView = view;
+            
+            if (view === 'dashboard') {
+                dashboardView.style.display = 'block';
+                settingsView.style.display = 'none';
+                navDashboard.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                navSettings.style.backgroundColor = 'transparent';
+                navProfile.style.backgroundColor = 'transparent';
+            } else if (view === 'settings') {
+                dashboardView.style.display = 'none';
+                settingsView.style.display = 'block';
+                navDashboard.style.backgroundColor = 'transparent';
+                navSettings.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                navProfile.style.backgroundColor = 'transparent';
+            } else if (view === 'profile') {
+                profileModal.classList.add('active');
+                navDashboard.style.backgroundColor = 'transparent';
+                navSettings.style.backgroundColor = 'transparent';
+                navProfile.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            }
+        }
+
+        // Event Listeners
+        loginBtn.addEventListener('click', () => {
+            loginModal.classList.add('active');
+        });
+
+        signupBtn.addEventListener('click', () => {
+            signupModal.classList.add('active');
+        });
+
+        closeLogin.addEventListener('click', () => {
+            loginModal.classList.remove('active');
+        });
+
+        closeSignup.addEventListener('click', () => {
+            signupModal.classList.remove('active');
+        });
+
+        closeTest.addEventListener('click', () => {
+            testModal.classList.remove('active');
+        });
+
+        closeProfile.addEventListener('click', () => {
+            profileModal.classList.remove('active');
+        });
+
+        showSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.classList.remove('active');
+            signupModal.classList.add('active');
+        });
+
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupModal.classList.remove('active');
+            loginModal.classList.add('active');
+        });
+
+        skipLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.classList.remove('active');
+            state.user.loggedIn = false;
+            updateProfileInfo();
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Simple validation
+            if (email && password) {
+                state.user.loggedIn = true;
+                state.user.email = email;
+                if (email.includes('@')) {
+                    state.user.name = email.split('@')[0];
+                    state.user.username = email.split('@')[0].toLowerCase();
+                }
+                
+                alert('Login successful!');
+                loginModal.classList.remove('active');
+                updateProfileInfo();
+            } else {
+                alert('Please fill in all fields');
+            }
+        });
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            
+            // Simple validation
+            if (name && username && email && password) {
+                state.user.loggedIn = true;
+                state.user.name = name;
+                state.user.username = username;
+                state.user.email = email;
+                
+                // Check if username is already taken (simulated)
+                if (username === 'admin' || username === 'test') {
+                    alert('Username is already taken. Please choose another one.');
+                    return;
+                }
+                
+                alert('Account created successfully!');
+                signupModal.classList.remove('active');
+                updateProfileInfo();
+            } else {
+                alert('Please fill in all fields');
+            }
+        });
+
+        testForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const book = parseInt(document.getElementById('test-book').value);
+            const testNum = parseInt(document.getElementById('test-number').value);
+            const section = document.getElementById('test-section').value;
+            const band = parseFloat(document.getElementById('test-band').value);
+            const correct = document.getElementById('test-correct').value 
+                          ? parseInt(document.getElementById('test-correct').value) 
+                          : null;
+            
+            // Update test data
+            const testId = `book-${book}-test-${testNum}-${section}`;
+            const testIndex = state.tests.findIndex(t => t.id === testId);
+            
+            if (testIndex !== -1) {
+                state.tests[testIndex].completed = true;
+                state.tests[testIndex].band = band;
+                state.tests[testIndex].correct = correct;
+                state.tests[testIndex].date = new Date();
+                
+                alert('Test results saved successfully!');
+                testModal.classList.remove('active');
+                generateBookCards(state.currentFilter);
+            } else {
+                alert('Test not found!');
+            }
+        });
+
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('edit-name').value;
+            const username = document.getElementById('edit-username').value;
+            const email = document.getElementById('edit-email').value;
+            const targetBand = parseFloat(document.getElementById('edit-target').value);
+            
+            // Check if username is already taken (simulated)
+            if (username !== state.user.username && (username === 'admin' || username === 'test')) {
+                alert('Username is already taken. Please choose another one.');
+                return;
+            }
+            
+            state.user.name = name;
+            state.user.username = username;
+            state.user.email = email;
+            state.user.targetBand = targetBand;
+            
+            alert('Profile updated successfully!');
+            profileModal.classList.remove('active');
+            updateProfileInfo();
+        });
+
+        editProfileBtn.addEventListener('click', () => {
+            profileModal.classList.add('active');
+        });
+
+        changePhoto.addEventListener('click', (e) => {
+            e.preventDefault();
+            profileUpload.click();
+        });
+
+        profileUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    state.user.profilePic = event.target.result;
+                    updateProfileInfo();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        navDashboard.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView('dashboard');
+        });
+
+        navProgress.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView('dashboard');
+        });
+
+        navSettings.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView('settings');
+        });
+
+        navProfile.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView('profile');
+        });
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                generateBookCards(btn.dataset.book);
+            });
+        });
+
+        googleLogin.addEventListener('click', () => {
+            alert('Google login would be implemented in a real application');
+            state.user.loggedIn = true;
+            state.user.name = "Google User";
+            state.user.username = "google_user";
+            state.user.email = "googleuser@example.com";
+            loginModal.classList.remove('active');
+            updateProfileInfo();
+        });
+
+        facebookLogin.addEventListener('click', () => {
+            alert('Facebook login would be implemented in a real application');
+            state.user.loggedIn = true;
+            state.user.name = "Facebook User";
+            state.user.username = "facebook_user";
+            state.user.email = "facebookuser@example.com";
+            loginModal.classList.remove('active');
+            updateProfileInfo();
+        });
+
+        googleSignup.addEventListener('click', () => {
+            alert('Google signup would be implemented in a real application');
+            state.user.loggedIn = true;
+            state.user.name = "Google User";
+            state.user.username = "google_user";
+            state.user.email = "googleuser@example.com";
+            signupModal.classList.remove('active');
+            updateProfileInfo();
+        });
+
+        facebookSignup.addEventListener('click', () => {
+            alert('Facebook signup would be implemented in a real application');
+            state.user.loggedIn = true;
+            state.user.name = "Facebook User";
+            state.user.username = "facebook_user";
+            state.user.email = "facebookuser@example.com";
+            signupModal.classList.remove('active');
+            updateProfileInfo();
+        });
+
+        manageLoginBtn.addEventListener('click', () => {
+            loginModal.classList.add('active');
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) loginModal.classList.remove('active');
+            if (e.target === signupModal) signupModal.classList.remove('active');
+            if (e.target === testModal) testModal.classList.remove('active');
+            if (e.target === profileModal) profileModal.classList.remove('active');
+        });
+
+        // Initialize the app
+        function initApp() {
+            initializeTestData();
+            generateBookCards();
+            updateProfileInfo();
+            
+            // Set current year
+            document.querySelector('.copyright p').textContent = 
+                `\u00A9 ${new Date().getFullYear()} Cambridge IELTS Tracker. All rights reserved. | Version 2.0`;
+        }
+
+        // Start the app when page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
